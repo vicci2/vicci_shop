@@ -1,0 +1,41 @@
+{% extends "viccistockinvetry.html" %}
+
+{% block title %}Stock Up Vicci{% endblock %}
+
+{% block nav %}
+    <li class="nav-item">
+    <a class="nav-link da " aria-current="page" href="./">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-warning active" aria-current="page" href="./inventory">Products</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="#">Something</a>
+  </li>
+{% endblock %}
+
+{% block sale %}
+<div class="col col-lg-3 col-md-4 col-sm-4" style="margin-bottom: 80px;"></div>
+{% endblock %}
+<div class="row">
+{% block content %} 
+<table class="table table-lg-12 table-md-12 table-sm-12  mt-5 " id="tbl1" align='center'>                     
+    <thead>
+      <tr class="tbltr text-warning">
+          <th scope="col">PRODUCT</th>
+          <th scope="col">Price</th>
+          <th scope="col">QUANTITY</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for i in invtory %}
+        <tr>
+          <td style="font-weight: 400; font-size: 130%;">{{i.name}}</td>
+          <td style="font-weight: 400; font-size: 130%;">{{i.sp}}</td>
+          <td style="font-weight: 400; font-size: 130%;">{{i.quantity}}</td>                                                                 
+        </tr>
+    {% endfor %}                         
+    </tbody>
+</table>
+{% endblock %}
+</div>

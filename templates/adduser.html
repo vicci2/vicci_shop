@@ -1,0 +1,203 @@
+{% extends "manager.html" %}
+{% block title %}Stock Up Vicci{% endblock %}
+
+{% block navtitle %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
+<style>
+  form{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+    justify-content: center;
+  }
+  form .modal-footer{
+    justify-content: space-between;
+  } 
+  form .form-check{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+    justify-content: center; align-items: center;
+  }
+</style>
+<h2>Add user</h2> 
+<div class="col-sm-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}  align-items-center alert-dismissible fade show" role="alert">
+        <span>{{message}}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          <!-- <span aria-hidden="true">&times;</span> -->
+        </button>
+      </div>           
+      {% endfor%}
+    {% endif %}
+  {% endwith %}
+</div>       
+<div class="top">
+  <a href="admin">Home</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}                                                      
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
+<style>
+    input{border: none;
+      text-align: center;
+      font-size: larger;
+      color: aqua;
+      background: rgb(54, 54, 53);
+      outline: none;font-family: sans-serif;
+      border-bottom: 1px solid rgb(255, 255, 255);
+    }
+    a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
+    a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
+    form{
+      display: flex;flex-wrap: wrap;flex-direction: column;
+      justify-content: center;
+    }
+    form .modal-footer{
+      justify-content: space-between;
+    } 
+    .card{
+        width: 48%;display: flex;flex-wrap: wrap;flex-direction: row;
+      margin: .2rem 0px;
+  }
+    .card-body{
+      display: flex;flex-direction: column; justify-content: center;text-align: center;
+    }
+    #card1{
+      border: none;border-left: 1px solid rgb(46, 43, 43);border-top: 1px solid rgb(46, 43, 43);
+      border-radius: 0px; border-top-left-radius: 4px;  
+    }
+    #card2{
+      border: none;border-right: 1px solid rgb(46, 43, 43);border-top: 1px solid rgb(46, 43, 43);
+      border-radius: 0px; border-top-right-radius: 4px;  
+    }
+    #card3{
+      border: none;border-radius: 5px; border-bottom: 1px solid rgb(46, 43, 43);
+    }
+    form .form-check{
+      display: flex;flex-wrap: wrap;flex-direction: column;
+      justify-content: center; align-items: center;
+    }
+  </style>
+  <div class="col col-lg-12 col-md-12 col-sm12" style="margin-top: 14%;">        
+    <div class="row text-warning">        
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+            <th>Status</th>
+            <th>Add user</th>
+            <th>Drop Candidate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users  %}
+           <tr>
+            <td>{{user.lname}} {{user.fname}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.tel}}</td>
+            <td>{{user.status}}</td>
+           <td>
+            <a id="lin1" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal{{user.id}}"><img src="/static/adder2.png" alt="Add User">User</a>                                                        
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style=" padding:5px; background-color: rgb(125, 129, 120);">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><img src="/static/adder.png" alt="Add User"> User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>                                 
+                            <form action="adduser" style="text-align: center;" method="post" class="pop">
+                              <p><h3>Add user {{user.lname}} {{user.fname}}</h3></p>
+                                <div class="mb-3">
+                                  <label for="Item" class="form-label"></label>
+                                  <input type="hidden" name="fname" value="{{user.fname}}" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label"></label>
+                                  <input type="hidden" name="lname" value="{{user.lname}}" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label"></label>
+                                  <input type="hidden" name="email" value="{{user.email}}" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label"></label>
+                                  <input type="hidden" name="tel" value="{{user.tel}}" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label">Designantion</label>
+                                  <input type="text" name="desg" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label"></label>
+                                  <input type="hidden" name="status" value="Employed">
+                                  
+                                  <label for="Item" class="form-label">Employee ID</label>
+                                  <input type="number" name="eid" class="form-control" id="Item">
+                                  
+                                  <label for="Item" class="form-label">Password</label>
+                                  <input type="password" name="pwd1" class="form-control" id="Item">
+
+                                  <button type="submit " style="width: 300px;" class="btn mt-4 btn-primary" data-bs-target="tbl1">Add User</button>
+                                </div>                         
+                              <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <button type="reset" class="btn btn-danger">Cancel</button>
+                              </div>
+                          </form>
+                    </div> 
+                </div>
+            </div>
+           </td>
+           <td>
+            <a  style="color: darkcyan;" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}"><img src="/static/delete.png" alt="" srcset=""></a>
+              <!-- Modal -->
+              <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                 <div class="modal-content" style="background: rgb(54, 54, 53);">
+                   <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                   </div>
+                   <div class="modal-body">
+                   <form action="delete1" method="POST">
+                     <div class="mb-3">
+                       <input type="hidden" name="id"  value="{{user.id}}" class="form-control" id="Item">
+                     </div>
+                     <div class="mb-3">
+                       <input type="hidden" name="uname" disabled value="{{user.uname}}" class="form-control" id="Item">
+                     </div>
+                     <div class="mb-3">
+                       <input type="text" name="name" disabled  value=" {{user.fname}}  {{user.lname}}" class="form-control" id="Item">
+                     </div>
+                     <div class="mb-3">
+                       <input type="text" name="desg" disabled  value="{{user.email}}" class="form-control" id="Item">
+                     </div>
+                     <div class="mb-3">
+                       <label for="Item" class="form-label"><strong>Password</strong></label>
+                       <input type="password" name="passw"  class="form-control" id="Item">
+                     </div>
+                   <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button type="submit" class="btn btn-dark">Delete</button>
+                   </div>
+                   </form>
+                   </div>
+                 </div>
+               </div>
+             </div>
+          </td>           
+           </tr>
+           {% endfor %}
+         </tbody>
+       </table>
+    </div>
+  </div>
+  </div>
+  </div>
+{% endif %}
+{% endblock %}
+{% block footer%}
+{% endblock%}

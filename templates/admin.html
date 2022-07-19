@@ -1,0 +1,259 @@
+{% extends "manager.html" %}
+{% block title %}Stock Up Vicci{% endblock %}
+
+{% block navtitle %}
+<style>
+  form{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+    justify-content: center;
+  }
+  form .modal-footer{
+    justify-content: space-between;
+  } 
+  form .form-check{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+    justify-content: center; align-items: center;
+  }
+</style>
+<h2>ADMIN</h2> 
+<div class="col-sm-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}}  align-items-center alert-dismissible fade show" role="alert">
+        <span>{{message}}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          <!-- <span aria-hidden="true">&times;</span> -->
+        </button>
+      </div>           
+      {% endfor%}
+    {% endif %}
+  {% endwith %}
+</div>       
+<div class="top">
+  <a href="logout">Log-Out</a>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+  {% if current_user.is_authenticated and current_user.designation=="Admin" %}
+  <a class="navbar " id="lin1" href="home">Home</a>
+  <a class="navbar " id="lin4" href="users">Users</a>
+  <a id="lin1" class="btn" href="adduser"><img src="/static/adder2.png" alt="Add User">User</a>                                                        
+  <a id="lin1" class="btn" data-bs-toggle="modal" data-bs-target="#editModal"><img src="/static/download.png" alt="Edit Details"></a>                                                        
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content" style=" padding:5px; background-color: rgb(125, 129, 120);">
+              <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"> Edit Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>                                 
+                  <form action="edit3" style="text-align: center" method="post" class="pop">                                                                                 
+                    
+                    <div class="mb-3">
+                      <!-- <label for="Item" class="form-label"></label> -->
+                      <input type="hidden"    name="id" value="{{admin.id}}" class="form-control" id="Item">
+                    </div>  
+                    <!-- <div class="mb-3">
+                      <label for="Item" class="form-label"><strong>Full Name</strong> </label>
+                      <input type="hidden"  name="fname" value="{{admin.name}}" class="form-control" id="Item">
+                    </div> -->
+                    <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>UserName</strong> </label>
+                        <input type="text" name="uname" value="{{admin.uname}}" class="form-control" id="Item">
+                      </div>
+                    <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>Email Address</strong> </label>
+                        <input type="email" name="email" value="{{admin.email}}" class="form-control" id="Item">
+                      </div>
+                    <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>Whatsapp Number</strong> </label>
+                        <input type="tel"  name="wapp" value="{{admin.whatsapp}}" class="form-control" id="Item">
+                      </div>
+                      <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>Telegram</strong> </label>
+                        <input type="text" name="tgram" value="{{admin.tgram}}" class="form-control" id="Item">
+                      </div>
+                      <!-- <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>Instagram</strong> </label>
+                        <input type="text" name="igram" value="{{admin.igram}}" class="form-control" id="Item">
+                      </div> -->
+                    <div class="mb-3 form-check">                                             
+                      <button type="submit" style="width: 300px;" class="btn btn-primary" data-bs-target="tbl1">Edit Details</button>
+                      <button type="button" class="btn mt-2 btn-dark" data-bs-dismiss="modal">Close</button>
+                    </div>                                        
+                </form>
+        </div>
+      </div>
+  </div>  
+  {% endif %}                                                      
+{% endblock %}
+
+{% block content %}
+<style>
+  a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
+  a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
+  form{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+    justify-content: center;
+  }
+  form .modal-footer{
+    justify-content: space-between;
+  }  
+  .modal-footer{
+    justify-content: space-between;
+  } 
+  .cont{
+    display: flex;flex-wrap: wrap;justify-content: space-between;
+  } 
+  .cont .pic {
+    overflow: hidden;
+  }
+  .cont .pic{
+    width: 34%;border-radius: 2rem;
+  }
+  .pic img{
+    width: 100%;
+    transition: all 1s ease;
+  }
+  .pic img:hover{
+    transform: scale(1.4);
+  }
+  .cont .card{
+    width: 64%;margin: 0rem .5rem;
+  }
+  .cardcont{
+    padding: 1rem .5rem;display: flex;flex-direction: column;
+    flex-wrap: wrap; justify-content: center;
+    align-items: center;
+  }
+  .cardttl h3{
+    margin: 1rem 0rem;
+  }
+  footer{
+    display: flex;flex-wrap: wrap;flex-direction: row;
+    justify-content: space-evenly;
+    margin-top:2rem;
+    padding: .8rem 1rem;
+  }
+</style>
+<div class="col col-lg-11 col-md-12 col-sm12" style="margin-top: 14%;">        
+  <div class="row text-warning">
+    <div class="row text-warning"> 
+      
+      <h1 align="center">{{admin.uname}}'Profile</h1>
+      
+    </div>
+      <div class="cont">
+        <div class="pic">
+          <img src="/static/illustration-mockups.svg"  alt="userpic">
+        </div>
+        <div class="card">
+          <div class="cardttl text-warning">
+            <h3 align="center" >Bio Information</h3>
+          </div>
+          <div class="cardcont cardcont-lg-6 cardcont-md-12 cardcont-sm-12 text-dark">
+            
+            <h4>NAME :{{admin.lname}} {{admin.fname}}</h4>
+            <h4>EMAIL : {{admin.email}}</h4>
+            <h4>PHONE-NO : {{admin.tel}}</h4>
+            <h4>EMPLOYEE-ID : {{admin.e_id}}</h4>
+            <h4>DESIGNATION : {{admin.designation}}</h4>
+            
+          </div>
+          <a id="lin1" class="btn" data-bs-toggle="modal" data-bs-target="#changepasModalToggle">Change Password</a>
+          <div class="modal fade" id="changepasModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content bg-dark text-danger">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalToggleLabel">Enter Password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="confirm" method="POST">
+                    <input type="hidden" class="form-control"  name="id" value="{{admin.id}}">
+                    <label for="item1">Enter User Password</label>                    
+                    <input type="password" class="form-control" id="Item1" name="password" >
+                    <label for="item2">Enter New Password</label>
+                    <input type="password" class="form-control" id="Item2" name="password1">
+                    <label for="item3">Confirm Password</label>
+                    <input type="password" class="form-control" id="Item3" name="password2">                    
+                    <div class="modal-footer mt-2">
+                      <button class="btn btn-dark text-warning" type="submit">Finish</button>
+                      <button type="button" class="btn mt-2 btn-dark text-warning" data-bs-dismiss="modal">Close</button>
+                    </div>                  
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content  bg-dark text-danger">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalToggleLabel2">New Password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="compair" method="post">
+                    <label for="p1">Enter New Password</label>
+                    <input type="password" class="form-control" id="Item" name="password1" id="p1">
+                    <label for="p2">Confirm Password</label>
+                    <input type="password" class="form-control" id="Item" name="password1" id="p2">
+                    <div class="modal-footer">
+                      <button class="btn  bg-dark text-warning" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                      <button class="btn  bg-dark text-warning"  data-bs-toggle="modal" type>Next</button>
+                  </div>                
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="exampleModalToggle3" aria-hidden="true" aria-labelledby="exampleModalToggleLabel3" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content  bg-dark text-danger">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalToggleLabel3">Change Password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="" method="post">
+                    <button type="button" class="btn  bg-dark text-warning">FINISH</button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn  bg-dark text-warning" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button> 
+                  <button class="btn  bg-dark text-warning" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Back to first</button>              
+                  <button type="button" class="btn mt-2 btn-dark text-warning" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div> -->
+      </div>
+      </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="bottom bg-dark text-danger ">
+  <div class="contact">
+    hotlines
+    <ul>      
+      <li>Mobile No.:{{admin.tel}}</li>
+      <li>Whatsapp  :{{admin.whatsapp}}</li>          
+    </ul>
+  </div>
+  <div class="socials">
+    socials
+    <ul>
+      <li>{{admin.whatsapp}}</li>
+      <li>{{admin.tgram}}</li>
+      <li>{{admin.igram}}</li>
+    </ul>    
+  </div>
+</footer>
+{% endblock %}
