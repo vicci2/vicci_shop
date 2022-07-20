@@ -7,8 +7,10 @@ from sqlalchemy import  func, extract, DateTime
 from flask_login import UserMixin,login_user,logout_user,login_required,current_user,LoginManager
 from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime, date, time
-
 from email.policy import default
+# from configs.base_config import Config ,Development, Testing, Production
+
+
 # import psycopg2
 # passing the app to flask:
 app =Flask(__name__)
@@ -72,7 +74,7 @@ class Newsletter(db.Model):
     lname = db.Column(db.String(80), unique=False)   
     email = db.Column(db.String(80), unique=True)
     tel=db.Column(db.String(80) ,nullable=True)
-    status =db.Column(db.String(20),nullable=True,unique=True)
+    status =db.Column(db.String(20),nullable=False,unique=False)
     date=db.Column(db.DateTime(timezone=True), nullable=False ,default = func.now() ) 
 
 class Users(db.Model,UserMixin):
@@ -139,15 +141,15 @@ def invent():
 def adder():
     if request.method == "POST": 
         nam=request.form["name"]
-        desg=request.form["desg"]
-        upass=request.form["pass"]
+        # desg=request.form["desg"]
+        # upass=request.form["pass"]
         qtt=int(request.form["qtt"])
         result=Product.query.filter_by(name=nam ).first()
         if result:
             # usr=Users.query.filter(db.or_,desg=="Admin" , desg =="Manager" ).one()
-            usr=Users.query.filter_by(uname=desg).one()
-            if usr and usr.designation=="Admin" or usr.designation=="Manager":
-                if   check_password_hash(usr.upasscode ,upass):
+            # usr=Users.query.filter_by(uname=desg).one()
+            # if usr and usr.designation=="Admin" or usr.designation=="Manager":
+                # if   check_password_hash(usr.upasscode ,upass):
                     data=Stock.query.filter_by(product_name=nam).one()
                     if data.quantity > qtt and qtt > 0:
                         result.quantity=result.quantity + qtt 
@@ -160,12 +162,12 @@ def adder():
                     else:
                         flash("Can't avail this much of the product","warning")
                         return redirect(url_for('invent'))
-                else:
-                    flash("Wrong password","danger")
-                    return redirect(url_for('invent'))
-            else:
-              flash("Invalid user details","danger")
-              return redirect(url_for("invent"))
+                # else:
+                #     flash("Wrong password","danger")
+                #     return redirect(url_for('invent'))
+            # else:
+            #   flash("Invalid user details","danger")
+            #   return redirect(url_for("invent"))
         else:
             flash(f"{nam} is not available","danger")
             return redirect(url_for('invent'))
@@ -305,12 +307,15 @@ def avail():
 @app.route('/sales')
 @login_required
 def sales():
-    sale=db.session.query(Product.name,db.func.sum(Product.sp-Product.bp)*Sales.quantity.label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()
+    sale = db.session.query(Product.name, db.func.sum(Sales.quantity).label("Quantity"),db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit")).join(Sales, Product.id == Sales.product_id).group_by(Product.name).all()
+    for result in sale:
+            print(' Name:', result[0], 'Quantity:', result[1], 'Profit:', result[2])
     return render_template("viccistocksales.html",sale=sale)
 
 @app.route('/sale/<string:id>')
 def sale(id):
-#     cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join products as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])
+#     cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join product as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])
+    #  r = db.session.query(Product.name, db.func.sum(Sales.quantity).label("Quantity"),db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit")).join(Sales, Product.id == Sales.product_id).group_by(Product.name).filter(Product.id==id).all()    
     sales=db.session.query(Product.name,db.func.sum(Product.sp-Product.bp)*Sales.quantity.label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
     return render_template("viccistocksales.html",sale=sales)
     
@@ -410,6 +415,7 @@ def admin():
 @login_required 
 def adduser():
     if request.method=="POST":
+        uid=request.form["id"]
         fname=request.form["fname"] 
         lname=request.form["lname"]        
         email=request.form["email"]
@@ -426,9 +432,10 @@ def adduser():
                         if len(tel) == 10 or len(tel) ==12 or len(tel) ==13:
                             if(designation =="Admin" or designation =="Manager" or designation =="User"):
                                 id=Users.query.filter_by(e_id = e_id).first()
+                                data=Newsletter.query.filter_by(id=uid).one()
                                 if not id:
                                     row=Users(fname=fname,lname=lname,email=email,upasscode=generate_password_hash( upasscode,method='sha256'),tel=tel,designation=designation,e_id=e_id,uname=designation+e_id)    
-                                    data=Newsletter(fname=fname, lname=lname,status=status,email=email,tel=tel)
+                                    data.status=status
                                     db.session.add(row)
                                     db.session.merge(data)
                                     db.session.commit()
