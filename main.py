@@ -441,7 +441,7 @@ def manager():
     return render_template("manager.html",manager=current_user)
 
 @app.route("/admin",methods=["GET","POST"])  
-@login_required 
+# @login_required 
 def admin():  
     return render_template("admin.html",admin=current_user)
 
