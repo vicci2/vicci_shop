@@ -26,7 +26,7 @@
     <!-- <a href="#" ><i class="fa-brands fa-whatsapp"></i></a> -->
 </h2>  
 <div class="col-sm-4">
-{% if current_user.is_authenticated and current_user.designation=="Admin"%}
+
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -43,14 +43,13 @@
 <div class="top">
   <a class="navbar " id="lin1" href="admin">Home</a>
 </div>
-{% endif %}
+
 {% endblock %}
 
 {% block sidebar %}
 {% endblock %}
 
 {% block content %}
-{% if current_user.is_authenticated and current_user.designation=="Admin"%}
 <style>
   input{border: none;
     text-align: center;
@@ -247,7 +246,7 @@
 </div>
 </div>
 </div>
-{% endif %}
+
 {% endblock %}
 
 {% block footer%}
