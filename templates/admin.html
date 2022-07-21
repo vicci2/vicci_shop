@@ -52,7 +52,7 @@
                   <form action="edit3" style="text-align: center" method="post" class="pop">                                                                                 
                     
                     <div class="mb-3">
-                      <!-- <label for="Item" class="form-label"></label> -->
+                      <label for="Item" class="form-label"></label>
                       <input type="hidden"    name="id" value="{{admin.id}}" class="form-control" id="Item">
                     </div>  
                     <!-- <div class="mb-3">
@@ -75,10 +75,10 @@
                         <label for="Item" class="form-label"><strong>Telegram</strong> </label>
                         <input type="text" name="tgram" value="{{admin.tgram}}" class="form-control" id="Item">
                       </div>
-                      <!-- <div class="mb-3">
-                        <label for="Item" class="form-label"><strong>Instagram</strong> </label>
+                      <div class="mb-3">
+                        <label for="Item" class="form-label"><strong>Instagram</strong></label>
                         <input type="text" name="igram" value="{{admin.igram}}" class="form-control" id="Item">
-                      </div> -->
+                      </div>
                     <div class="mb-3 form-check">                                             
                       <button type="submit" style="width: 300px;" class="btn btn-primary" data-bs-target="tbl1">Edit Details</button>
                       <button type="button" class="btn mt-2 btn-dark" data-bs-dismiss="modal">Close</button>
@@ -91,6 +91,7 @@
 {% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
   a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
   a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
@@ -236,9 +237,20 @@
 </div>
 </div>
 </div>
+{% else %}
+<p><h3>
+  You can not access this page!
+</h3></p>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+   <a class="nav-link   " aria-current="page" href="/home">Back</a>
+  </li>
+</ul>
+{% endif %}
 {% endblock %}
 
 {% block footer %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <footer class="bottom bg-dark text-danger ">
   <div class="contact">
     hotlines
@@ -256,4 +268,5 @@
     </ul>    
   </div>
 </footer>
+{% endif %}
 {% endblock %}

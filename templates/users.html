@@ -26,6 +26,7 @@
     <!-- <a href="#" ><i class="fa-brands fa-whatsapp"></i></a> -->
 </h2>  
 <div class="col-sm-4">
+{% if current_user.is_authenticated and current_user.designation=="Admin"%}
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -42,12 +43,14 @@
 <div class="top">
   <a class="navbar " id="lin1" href="admin">Home</a>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}
 {% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated and current_user.designation=="Admin"%}
 <style>
   input{border: none;
     text-align: center;
@@ -185,10 +188,10 @@
                               <label for="Item" class="form-label"><strong>Telegram</strong> </label>
                               <input type="text" name="tgram" value="{{user.tgram}}" class="form-control" id="Item">
                             </div>
-                            <!-- <div class="mb-3">
+                            <div class="mb-3">
                               <label for="Item" class="form-label"><strong>Instagram</strong> </label>
                               <input type="text" name="igram" value="{{user.igram}}" class="form-control" id="Item">
-                            </div> -->
+                            </div>
                           <div class="mb-3 form-check">                                             
                             <button type="submit" style="width: 300px;" class="btn btn-primary" data-bs-target="tbl1">Edit Details</button>
                             <button type="button" class="btn mt-2 btn-dark" data-bs-dismiss="modal">Close</button>
@@ -244,6 +247,7 @@
 </div>
 </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block footer%}

@@ -1,4 +1,3 @@
-from telnetlib import DM
 from flask import Flask, flash, redirect, render_template, request, url_for
 # SQL Achemy
 from flask_sqlalchemy import SQLAlchemy
@@ -18,8 +17,9 @@ app.secret_key="123secretkye"#THE SECRET KEY
 
 #Establish Connection
 try:
-    # defining the UPI to establis a connection:
+    # defining the UPI to establis a connection:    
     app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:vicciSQL@localhost:5432/alchemy'
+    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://mrerxiwtdinwip:6639d45c8e3a6b4866c2f29cad5077d35d4b70f7091ada07ee34e593f93aeec8@ec2-63-35-156-160.eu-west-1.compute.amazonaws.com:5432/db3es5gpr6ngft'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # conn = psycopg2.connect("dbname='duka' user='postgres' host='localhost' password='vicciSQL'")
     # conn = psycopg2.connect("dbname='db3es5gpr6ngft' user='mrerxiwtdinwip' port='5432' host='ec2-63-35-156-160.eu-west-1.compute.amazonaws.com' password='6639d45c8e3a6b4866c2f29cad5077d35d4b70f7091ada07ee34e593f93aeec8'")
@@ -65,7 +65,6 @@ class Sales(db.Model):
     product_id = db.Column (db.Integer, db.ForeignKey('product.id'), autoincrement = True)
     quantity = db.Column(db.Numeric(15), unique=False)
     created_at = db.Column(db.DateTime,nullable=False ,default=datetime.utcnow) 
-    # created_at = db.Column(db.DateTime(timezone=True), nullable = False, default = func.now())
 
 class Newsletter(db.Model):
     __tablename__= 'newsletter'
@@ -122,6 +121,9 @@ def home():
 @app.route('/dashboard')
 @login_required
 def dash():
+    # cur.execute("SELECT  extract(year from sl.created_at) || '-' || extract(month from sl.created_at) || '-' |
+    # | extract(day from sl.created_at)as date, sum((pr.sp-pr.bp)* sl.quantity) as totalprofit FROM public.sales as sl 
+    # join products as pr on pr.id=sl.product_id  group by sl.created_at order by sl.created_at ASC")    
     label=[]
     data=[]   
     for i in data:
@@ -177,8 +179,10 @@ def saler():
     id= request.form["pid"]  
     quantity= request.form["quantity"]
     created_at="NOW()"
-#     query="INSERT INTO public.sales (product_id,quantity,created_at) VALUES (%s,%s,%s);"
     data=Sales(product_id=id,quantity=quantity,created_at=created_at)
+    prd=Product.query.filter_by(id=id).one()
+    prd.quantity=prd.quantity-int(quantity)
+    db.session.merge(prd)
     db.session.add(data)
     db.session.commit()
     flash('Purchace Successful','info') 
@@ -214,37 +218,67 @@ def editor3():
     if request.method == "POST":
         id=request.form["id"]
         data=Users.query.filter_by(id=id).one()
-        data.uname=request.form["uname"]
-        data.email=request.form["email"]
-        data.whatsapp=request.form["wapp"]
-        data.tgram=request.form["tgram"]
-        # data.igram=request.form["igram"]
-        # data.name=request.form["fname"]
-        db.session.merge(data)
-        db.session.commit()
-        if data.designation == "Admin":
-            flash(f"{data.uname}'s details Successfully Edited", 'info') 
-            return redirect(url_for('admin'))
-        if data.designation == "Manager":
-            flash(f"{data.uname}'s details Successfully Edited", 'info') 
-            return redirect(url_for('manager'))
+        dtls=Users.query.filter(db.or_(Users.igram==request.form["igram"],Users.tgram == request.form["tgram"])).first()
+        if data :            
+            if dtls:
+                if data.designation == "Admin":
+                    flash("The Instagram or telegram links already exist try again","danger") 
+                    return redirect(url_for('admin'))
+                if data.designation == "Manager":
+                    flash("The Instagram or telegram links already exist try again","danger") 
+                    return redirect(url_for('manager'))
+                else:
+                    flash("The Instagram or telegram links already exist try again","danger") 
+                    return redirect(url_for('user'))
+            else:
+                data.uname=request.form["uname"]
+                data.email=request.form["email"]
+                data.whatsapp=request.form["wapp"]
+                data.tgram=request.form["tgram"]
+                data.igram=request.form["igram"]
+                db.session.merge(data)
+                db.session.commit()
+                if data.designation == "Admin":
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for('admin'))
+                if data.designation == "Manager":
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for('manager'))
+                else:
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for('user'))
         else:
-            flash(f"{data.uname}'s details Successfully Edited", 'info') 
-            return redirect(url_for('user'))
+            flash("Invalid entery", 'danger') 
+            return redirect(request.url)
 
 @app.route('/edit4',methods=["POST"])
 def edit4():
     if request.method=='POST':
         id=request.form["id"]
         data=Users.query.filter_by(id=id).one()
-        data.uname=request.form["uname"]
-        data.email=request.form["email"]
-        data.whatsapp=request.form["wapp"]
-        data.tgram=request.form["tgram"]
-        # data.igram=request.form["igram"]
-        # data.name=request.form["fname"]
-        db.session.merge(data)
-        db.session.commit()
+        dtls=Users.query.filter(db.or_(Users.igram==request.form["igram"],Users.tgram == request.form["tgram"])).first()
+        if data :            
+            if dtls:
+                flash("The Instagram or telegram links already exist try again","danger") 
+                return redirect(url_for('users'))
+            else:
+                data.uname=request.form["uname"]
+                data.email=request.form["email"]
+                data.whatsapp=request.form["wapp"]
+                data.tgram=request.form["tgram"]
+                data.igram=request.form["igram"]
+                db.session.merge(data)
+                db.session.commit()
+                if data.designation == "Admin":
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for("users"))
+                if data.designation == "Manager":
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for("users"))
+                else:
+                    flash(f"{data.uname}'s details Successfully Edited", 'info') 
+                    return redirect(url_for("users"))
+
         flash(f" User {data.uname} details changed","info")
         return redirect(url_for("users"))
 
@@ -307,16 +341,16 @@ def avail():
 @app.route('/sales')
 @login_required
 def sales():
-    sale = db.session.query(Product.name, db.func.sum(Sales.quantity).label("Quantity"),db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit")).join(Sales, Product.id == Sales.product_id).group_by(Product.name).all()
+    # sales= db.session.query(Product.name,db.func.sum(Product.sp-Product.bp)*Sales.quantity.label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
+    sale = db.session.query(Product.name,db.func.sum(Sales.quantity).label("Quantity"),db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit")).join(Sales, Product.id == Sales.product_id).group_by(Product.name).all()
     for result in sale:
-            print(' Name:', result[0], 'Quantity:', result[1], 'Profit:', result[2])
+        print(' Name:', result[0], 'Quantity:', result[1], 'Profit:', result[2])
     return render_template("viccistocksales.html",sale=sale)
 
 @app.route('/sale/<string:id>')
 def sale(id):
-#     cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join product as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])
-    #  r = db.session.query(Product.name, db.func.sum(Sales.quantity).label("Quantity"),db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit")).join(Sales, Product.id == Sales.product_id).group_by(Product.name).filter(Product.id==id).all()    
-    sales=db.session.query(Product.name,db.func.sum(Product.sp-Product.bp)*Sales.quantity.label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
+    # cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join product as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])    
+    sales=db.session.query(Product.name,db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
     return render_template("viccistocksales.html",sale=sales)
     
 @app.route('/payroll', methods=["GET","POST"] )
@@ -494,25 +528,27 @@ def login():
             flash('Wrong username try again!','warning')
             return redirect(url_for("ims"))
         else:
-            if check_password_hash(user.upasscode, password):
-            # if user.upasscode == password:
-                if user.designation=="Admin":
-                    flash(f"{user.uname} you successfully Logged in!",'info')
-                    login_user(user,remember=True)
-                    # return redirect(url_for("dash"))
-                    return redirect(url_for("admin"))
-                elif user.designation=="Manager":
-                    flash(f"{user.uname} you successfully Logged in!",'info')
-                    login_user(user,remember=True)
-                    return redirect(url_for("manager"))
+            # counter=0
+            # while counter < 3:
+                if check_password_hash(user.upasscode, password):
+                # if user.upasscode == password:
+                    if user.designation=="Admin":
+                        flash(f"{user.uname} you successfully Logged in!",'info')
+                        login_user(user,remember=True)
+                        # return redirect(url_for("dash"))
+                        return redirect(url_for("admin"))
+                    elif user.designation=="Manager":
+                        flash(f"{user.uname} you successfully Logged in!",'info')
+                        login_user(user,remember=True)
+                        return redirect(url_for("manager"))
+                    else:
+                        flash(f"{user.uname} you successfully Logged in!",'info')
+                        login_user(user,remember=True)  
+                        return redirect(url_for("user"))
                 else:
-                    # session['user_id']=user.id
-                    flash(f"{user.uname} you successfully Logged in!",'info')
-                    login_user(user,remember=True)  
-                    return redirect(url_for("user"))
-            else:
-                flash('Wrong password. Try again!','danger') 
-                return redirect(url_for("ims"))
+                    print("snlvmvklsmvs")
+                    flash('Wrong password. Try again!','danger') 
+                    return redirect(url_for("ims"))
 
 @app.route("/signup",methods=["GET","POST"])
 def signup():
@@ -544,6 +580,38 @@ def signup():
                 flash("Your First and last name must be of atleast 3 charecters","warning")
                 return redirect(request.url)
     return render_template("signUp.html")
+
+@app.route("/forgot",methods=["GET","POST"])
+def forgot():
+    if request.method=="POST":
+        email=request.form["email"]
+        usr=Users.query.filter_by(email=email).all()
+        if email == "":
+            flash("Please enter a valid email address","warning")
+            return redirect(request.url)
+        elif usr and len(email) > 2:             
+            return redirect(url_for("newpass")) 
+        else:
+            flash("User doesn't exist check your email address and try again","warning")
+            return redirect(request.url)
+    return render_template("forgot.html")
+
+@app.route("/newpass",methods=["GET","POST"])
+def newpass():
+    if request.method=="POST":
+        pw1=request.form["pw1"]
+        pw2=request.form["pw2"]
+        if len(pw1)> 5:
+            if pw1 == pw2:
+                flash("Password reset successful","info")
+                return redirect(url_for("ims"))
+            else:
+                flash("Passwords do not match","danger")
+                return redirect(request.url)
+        else:
+            flash("Enter astonger password of at least 6 charecters","danger")
+            return redirect(request.url)
+    return render_template("new.html")
 
 @app.route("/view",methods=["POST"])
 def view():

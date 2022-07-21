@@ -8,6 +8,7 @@
     <title>Payroll</title>
 </head>
 <body>
+    {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}    
 <!-- /.............../navbar/.............../ -->
 <nav class="nav">
     <div class="nav-menu flex-row">
@@ -114,7 +115,16 @@
 <!-- /.............../Footer/.............../ -->
 
 <!-- /........x......./Footer/........x......./ -->
-
+{% else %}
+<p><h3>
+  You can not access this page!
+</h3></p>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+   <a class="nav-link   " aria-current="page" href="/home">Back</a>
+  </li>
+</ul>
+{% endif %}
 <!--/...............customJS............../ -->
 <script src="/static/js/jQuery v3.6.0.js"></script>
 <!--/...............EndcustomJS............../ -->    

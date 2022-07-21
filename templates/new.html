@@ -1,0 +1,33 @@
+{% extends "viccistockims.html" %}
+{% block title %}Reset password{% endblock %}
+{% block nav %}
+<li class="nav-item">
+    <a class="nav-link" aria-current="page"  href="/">Home</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<style>
+    .card{
+        border: none;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        text-align: center;color: gold;
+    }
+    .a{
+        text-decoration: none; color: brown;margin-top: 2rem;
+    }
+</style>
+<div class="card mt-2">
+    <p><h3><ins>Reset Password</ins></h3></p>
+</div>
+<form action="newpass" method="POST">
+    <label for="item1" class="form-label">New Password</label>
+    <input type="password" name="pw1"  class="form-control" id=" item1">
+    <label for="item2" class="form-label">Confirm Password</label>
+    <input type="password" name="pw2"  class="form-control" id=" item2">
+    <div class="modal-footer" style="display: flex; justify-content: space-between;">
+        <button type="submit"  class="btn btn-dark" >Reset Password</button>
+        <button type="reset" class="btn btn-danger"> Cancel</button>
+      </div>
+</form>
+{% endblock %}

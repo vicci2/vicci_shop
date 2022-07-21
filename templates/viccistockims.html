@@ -14,14 +14,17 @@
 <body>
   <style>
   .modal-footer{
-    display: flex;flex-wrap: wrap;flex-direction: row;justify-content: center;
+    display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-between;
   }
     form{
       text-align: center;
     }  
     .a{
-        text-decoration: none; color: brown;margin-top: 2rem;
-    }             
+        text-decoration: none; color: brown;
+    }  
+  .links{
+    display: flex;flex-wrap: wrap; flex-direction: column;justify-self: unset;
+  }           
   </style>
 
         <nav class="navbar navbar-expand-lg navbar-primary  bg-dark " >
@@ -53,12 +56,14 @@
                       <label for="Item" class="form-label"><strong>Password</strong></label>
                       <input type="password" name="password"  class="form-control" id="Item">
                     </div>
-                  <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                    <button type="submit" class="btn btn-dark">Log IN</button>
+                  <div class="modal-footer">                   
+                    <button type="submit" class="btn btn-dark">Log IN</button>                    
                   </div>
                   </form>
-                  <a class="a" href="signup">Don't have an account? <ins style="color: gold;">Sign Up</ins></a>
+                  <div class="links">
+                    <a class="a"  href="forgot">Forgot pasword? <ins style="color: rgb(121, 240, 248);">Get Password</ins></a>                    
+                    <a class="a" href="signup">Don't have an account? <ins style="color: gold;">Sign Up</ins></a>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -174,7 +179,7 @@
               </div>
           </div>
       </div>
-{% endblock %}          
+          
 <footer class="footer">
   <div id="about" class="carder carder-lg-12 carder-md-12 carder-sm-12 mt-5 bg-dark" >
     
@@ -185,7 +190,7 @@
   </div>
 </footer>
 
-
+{% endblock %}
      <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

@@ -15,16 +15,17 @@
      <title>Sales</title>
  </head>
  <body>
+  {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}
   <nav class="navbar navbar-expand-lg navbar-primary  bg-dark " >
     <ul class="nav nav-tabs">
      <li class="nav-item">
-        <a class="nav-link da " aria-current="page" href="./home">Home</a>
+      <a class="nav-link   " aria-current="page" href="/home">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " aria-current="page" href="./dashboard">Dashboard</a>
+        <a class="nav-link " aria-current="page" href="/dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " aria-current="page" href="./inventory">Inventory</a>
+        <a class="nav-link " aria-current="page" href="/inventory">Inventory</a>
       </li>
       <li class="nav-item">
         <a class="nav-link active  nav-link-warning" aria-current="page" href="./sales">Sales</a>
@@ -47,14 +48,16 @@
               <th scope="col">PRODUCT NAME</th>
               <th scope="col">TOTAL PROFIT</th>
               <th scope="col">TOTAL QUANTITY</th>
+              <!-- <th scope="col">DATE</th> -->
             </tr>
           </thead>
           <tbody>
             {% for i in sale %}
             <tr>              
               <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">{{i.name}}</td>
-              <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">{{i.Profit}}</td>
-              <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">{{i.quantity}}</td>
+              <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">Kesh. {{i.Profit}}</td>
+              <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">{{i.Quantity}}</td>
+              <!-- <td style="font-weight: 400;transform: translateY(10px); font-size: 130%;">{{i.created_at}}</td> -->
             </tr> 
               {% endfor %}       
           </tbody>
@@ -76,7 +79,16 @@
       </div>
     </div>
   </div>
-</div>
+  {% else %}
+  <p><h3>
+    You can not access this page!
+  </h3></p>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+     <a class="nav-link   " aria-current="page" href="/home">Back</a>
+    </li>
+  </ul>
+  {% endif %}
  <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
