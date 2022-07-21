@@ -36,7 +36,6 @@
 {% endblock %}
 
 {% block sidebar %}
-  {% if current_user.is_authenticated and current_user.designation=="Admin" %}
   <a class="navbar " id="lin1" href="home">Home</a>
   <a class="navbar " id="lin4" href="users">Users</a>
   <a id="lin1" class="btn" href="adduser"><img src="/static/adder2.png" alt="Add User">User</a>                                                        
@@ -87,11 +86,10 @@
         </div>
       </div>
   </div>  
-  {% endif %}                                                      
 {% endblock %}
 
 {% block content %}
-{% if current_user.is_authenticated and current_user.designation=="Admin" %}
+
 <style>
   a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
   a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
@@ -237,16 +235,7 @@
 </div>
 </div>
 </div>
-{% else %}
-<p><h3>
-  You can not access this page!
-</h3></p>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-   <a class="nav-link   " aria-current="page" href="/home">Back</a>
-  </li>
-</ul>
-{% endif %}
+
 {% endblock %}
 
 {% block footer %}
