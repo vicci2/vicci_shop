@@ -528,8 +528,8 @@ def login():
         else:
             # counter=0
             # while counter < 3:
-                if check_password_hash(user.upasscode, password):
-                # if user.upasscode == password:
+#                 if check_password_hash(user.upasscode, password):
+                if user.upasscode == password:
                     if user.designation=="Admin":
                         flash(f"{user.uname} you successfully Logged in!",'info')
                         login_user(user,remember=True)
