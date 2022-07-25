@@ -2,6 +2,7 @@
 {% block title %}Stock Up Vicci{% endblock %}
 
 {% block navtitle %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
   form{
     display: flex;flex-wrap: wrap;flex-direction: column;
@@ -33,9 +34,15 @@
 <div class="top">
   <a href="logout">Log-Out</a>
 </div>
+{% else%}
+<div class="top">
+  <a href="home">Home</a>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
   <a class="navbar " id="lin1" href="home">Home</a>
   <a class="navbar " id="lin4" href="users">Users</a>
   <a id="lin1" class="btn" href="adduser"><img src="/static/adder2.png" alt="Add User">User</a>                                                        
@@ -85,11 +92,12 @@
                 </form>
         </div>
       </div>
-  </div>  
+  </div> 
+{% endif %} 
 {% endblock %}
 
 {% block content %}
-
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
   a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
   a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
@@ -235,7 +243,11 @@
 </div>
 </div>
 </div>
-
+{% else%}
+<div class="top">
+  <p><h2>You can't access this page!</h2></p>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block footer %}

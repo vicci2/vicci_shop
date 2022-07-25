@@ -2,7 +2,7 @@
 {% block title %}Stock Up Vicci{% endblock %}
 
 {% block navtitle %}
-
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
   form{
     display: flex;flex-wrap: wrap;flex-direction: column;
@@ -28,9 +28,10 @@
         </button>
       </div>           
       {% endfor%}
-    
+      {% endif %}
   {% endwith %}
-</div>       
+</div> 
+{% else%}      
 <div class="top">
   <a href="admin">Home</a>
 </div>
@@ -41,7 +42,7 @@
 {% endblock %}
 
 {% block content %}
-
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
     input{border: none;
       text-align: center;
@@ -200,7 +201,11 @@
   </div>
   </div>
   </div>
-
+{% else%}
+  <div class="top">
+    <p><h2>You can't access this page!</h2></p>
+  </div>
+{% endif %}
 {% endblock %}
 {% block footer%}
 {% endblock%}

@@ -18,7 +18,6 @@ app.secret_key="123secretkye"#THE SECRET KEY
 #Establish Connection
 try:
     # defining the UPI to establis a connection:    
-    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:vicciSQL@localhost:5432/alchemy'
     app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # conn = psycopg2.connect("dbname='duka' user='postgres' host='localhost' password='vicciSQL'")
