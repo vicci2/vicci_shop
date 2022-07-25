@@ -20,8 +20,6 @@ try:
     # defining the UPI to establis a connection:    
     app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    # conn = psycopg2.connect("dbname='duka' user='postgres' host='localhost' password='vicciSQL'")
-    # conn = psycopg2.connect("dbname='db3es5gpr6ngft' user='mrerxiwtdinwip' port='5432' host='ec2-63-35-156-160.eu-west-1.compute.amazonaws.com' password='6639d45c8e3a6b4866c2f29cad5077d35d4b70f7091ada07ee34e593f93aeec8'")
     print ("Successfullly connected to the  Vicci database")
 except:
     print ("Unable to connect to the  Vicci database")
@@ -441,12 +439,12 @@ def manager():
     return render_template("manager.html",manager=current_user)
 
 @app.route("/admin",methods=["GET","POST"])  
-# @login_required 
+@login_required 
 def admin():  
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
-# @login_required 
+@login_required 
 def adduser():
     if request.method=="POST":
         uid=request.form["id"]
