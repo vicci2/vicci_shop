@@ -505,7 +505,7 @@ def user():
 @app.route("/users",methods=["GET","POST"])  
 @login_required 
 def users():
-    users=Users.query.order_by(Users.designation).offset(1).all()
+    users=Users.query.order_by(Users.designation).all()
     print(users)
     return render_template("users.html",users=users)
 
@@ -528,8 +528,8 @@ def login():
         else:
             # counter=0
             # while counter < 3:
-#                 if check_password_hash(user.upasscode, password):
-                if user.upasscode == password:
+                if check_password_hash(user.upasscode, password):
+#                 if user.upasscode == password:
                     if user.designation=="Admin":
                         flash(f"{user.uname} you successfully Logged in!",'info')
                         login_user(user,remember=True)
