@@ -505,7 +505,7 @@ def user():
 @app.route("/users",methods=["GET","POST"])  
 @login_required 
 def users():
-    users=Users.query.order_by(Users.designation).filter(Users.designation !="Admin").all()
+    users=Users.query.order_by(Users.designation).all()
     print(users)
     return render_template("users.html",users=users)
 
