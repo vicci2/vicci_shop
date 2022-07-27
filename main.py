@@ -13,13 +13,13 @@ from email.policy import default
 # import psycopg2
 # passing the app to flask:
 app =Flask(__name__)
-app.secret_key="123secretkye"#THE SECRET KEY
+app.secret_key="v89dp2umig063701bcfb6750313f9247b4ed9330b055cjxa"#THE SECRET KEY
 
 #Establish Connection
 try:
     # defining the UPI to establis a connection:     
-    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
+    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
+    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
 except:
@@ -445,7 +445,7 @@ def admin():
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
-# @login_required 
+@login_required 
 def adduser():
     if request.method=="POST":
         uid=request.form["id"]
@@ -495,7 +495,7 @@ def adduser():
         else:           
             flash(f"User {fname} {lname} @{email} already exists","danger")
             return redirect(request.url)          
-    users=Newsletter.query.all()   
+    users=Newsletter.query.filter(Newsletter.status == "In progress").all()   
     return render_template("adduser.html",users=users)
 
 @app.route("/user",methods=["GET","POST"])
@@ -622,7 +622,7 @@ def view():
         data=Users.query.filter(Users.designation =="Admin").first()
         user=Users.query.filter_by(id=uid).one()
         # if data:
-        if check_password_hash(Users.upasscode, code):
+        if check_password_hash(data.upasscode, code):
             if desg=="Manager":
                 flash(f" Welcome {data.uname}","success")
                 login_user(user,remember=True)
