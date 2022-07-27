@@ -17,7 +17,8 @@ app.secret_key="123secretkye"#THE SECRET KEY
 
 #Establish Connection
 try:
-    # defining the UPI to establis a connection:    
+    # defining the UPI to establis a connection:     
+    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
     app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
@@ -444,7 +445,7 @@ def admin():
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
-@login_required 
+# @login_required 
 def adduser():
     if request.method=="POST":
         uid=request.form["id"]
@@ -466,7 +467,7 @@ def adduser():
                                 id=Users.query.filter_by(e_id = e_id).first()
                                 data=Newsletter.query.filter_by(id=uid).one()
                                 if not id:
-                                    row=Users(fname=fname,lname=lname,email=email,upasscode=generate_password_hash( upasscode,method='sha256'),tel=tel,designation=designation,e_id=e_id,uname=designation+e_id)    
+                                    row=Users(fname=fname,lname=lname,email=email,upasscode=generate_password_hash( upasscode,method='sha256'),tel=tel,designation=designation,e_id=e_id,uname=designation+e_id,igram=fname+".igram.com",tgram=fname+".tgram.com")    
                                     data.status=status
                                     db.session.add(row)
                                     db.session.merge(data)
@@ -505,8 +506,8 @@ def user():
 @app.route("/users",methods=["GET","POST"])  
 @login_required 
 def users():
-    users=Users.query.order_by(Users.designation).offset(1).all()
-    print(users)
+    users=Users.query.order_by(Users.designation).filter(Users.designation !="Admin").all()
+    print(users)    
     return render_template("users.html",users=users)
 
 @app.route("/purchase",methods=["GET","POST"])   
@@ -528,8 +529,8 @@ def login():
         else:
             # counter=0
             # while counter < 3:
-#                 if check_password_hash(user.upasscode, password):
-                if user.upasscode == password:
+                if check_password_hash(user.upasscode, password):
+                # if user.upasscode == password:
                     if user.designation=="Admin":
                         flash(f"{user.uname} you successfully Logged in!",'info')
                         login_user(user,remember=True)
@@ -544,7 +545,6 @@ def login():
                         login_user(user,remember=True)  
                         return redirect(url_for("user"))
                 else:
-                    print("snlvmvklsmvs")
                     flash('Wrong password. Try again!','danger') 
                     return redirect(url_for("ims"))
 
@@ -618,10 +618,10 @@ def view():
         code=request.form["passw"]
         uid=request.form["id"]
         # name=request.form["uname"]
-        data=Users.query.filter_by(designation="Admin").first()
+        # dcnv=check_password_hash(Users.upasscode, code)
+        data=Users.query.filter(Users.designation =="Admin").first()
         user=Users.query.filter_by(id=uid).one()
-        print("data",data.upasscode)
-        if check_password_hash(data.upasscode, code):
+        if data:
             if desg=="Manager":
                 flash(f" Welcome {data.uname}","success")
                 login_user(user,remember=True)
