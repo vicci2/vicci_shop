@@ -621,7 +621,8 @@ def view():
         # dcnv=check_password_hash(Users.upasscode, code)
         data=Users.query.filter(Users.designation =="Admin").first()
         user=Users.query.filter_by(id=uid).one()
-        if data:
+        # if data:
+        if check_password_hash(Users.upasscode, code):
             if desg=="Manager":
                 flash(f" Welcome {data.uname}","success")
                 login_user(user,remember=True)
