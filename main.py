@@ -295,7 +295,7 @@ def stockup():
         quantity=request.form["quantity"]
         bp= request.form["bp"]         
         created_at="NOW()"
-        if product_name == "" or quantity == "" or bp == "":
+        if product_name != "" or quantity != "" or bp != "":
             prodct=Stock.query.filter_by(product_name=product_name).first()
             if prodct:
                 flash("You can't add an existing product","danger")
