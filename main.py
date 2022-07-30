@@ -308,7 +308,7 @@ def stockup():
                 return redirect(url_for('stock'))
         else:
             flash('Required conditions not met!', 'danger') 
-            return render_template("viccistock.html")
+            return redirect(url_for('stock'))
        
 @app.route('/avail', methods=["POST"])
 def avail():
