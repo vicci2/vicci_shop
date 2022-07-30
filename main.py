@@ -349,7 +349,7 @@ def sales():
 @app.route('/sale/<string:id>')
 def sale(id):
     # cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join product as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])    
-    sales=db.session.query(Product.name,db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
+    sales=db.session.query(Product.name,db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).filter(Product.id==id).all()
     return render_template("viccistocksales.html",sale=sales)
     
 @app.route('/payroll', methods=["GET","POST"] )
