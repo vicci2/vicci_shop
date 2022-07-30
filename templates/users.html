@@ -136,13 +136,18 @@
                       <input type="hidden" name="id" value="{{user.id}}" class="form-control" id="Item">
                     </div>
                     <div class="mb-3">
-                      <input type="hidden" name="uname" disabled value="{{user.uname}}" class="form-control" id="Item">
+                      <input type="hidden" name="usr"  value="{{current_user.uname}}" class="form-control" id="Item">
                     </div>
+                    <label for="Item" class="form-label"><strong>Name</strong></label>
                     <div class="mb-3">
                       <input type="text" name="name" disabled  value="{{user.fname}}  {{user.lname}}" class="form-control" id="Item">
                     </div>
                     <div class="mb-3">
-                      <input type="text" name="desg" value="{{user.designation}}" class="form-control" id="Item">
+                      <input type="hidden" name="desg" value="{{user.designation}}" class="form-control" id="Item">
+                    </div>
+                    <label for="Item" class="form-label"><strong>Designation</strong></label>
+                    <div class="mb-3">
+                      <input type="text" disabled value="{{user.designation}}" class="form-control" id="Item">
                     </div>
                     <div class="mb-3">
                       <label for="Item" class="form-label"><strong>Password</strong></label>
@@ -222,13 +227,15 @@
                       <input type="hidden" name="id"  value="{{user.id}}" class="form-control" id="Item">
                     </div>
                     <div class="mb-3">
-                      <input type="hidden" name="uname" disabled value="{{user.uname}}" class="form-control" id="Item">
+                      <input type="hidden" name="usr"  value="{{current_user.uname}}" class="form-control" id="Item">
                     </div>
+                    <label for="Item" class="form-label"><strong>Name</strong></label>
                     <div class="mb-3">
                       <input type="text" name="name" disabled  value=" {{user.fname}}  {{user.lname}}" class="form-control" id="Item">
                     </div>
+                    <label for="Item" class="form-label"><strong>Designation</strong></label>
                     <div class="mb-3">
-                      <input type="text" name="desg"   value="{{user.designation}}" class="form-control" id="Item">
+                      <input type="text" name="name" disabled  value=" {{user.designation}}" class="form-control" id="Item">
                     </div>
                     <div class="mb-3">
                       <label for="Item" class="form-label"><strong>Password</strong></label>

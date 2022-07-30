@@ -13,13 +13,13 @@ from email.policy import default
 # import psycopg2
 # passing the app to flask:
 app =Flask(__name__)
-app.secret_key="v89dp2umig063701bcfb6750313f9247b4ed9330b055cjxa"#THE SECRET KEY
+app.secret_key="v89dp2umig063701bcfb67kcjn dpco3km2l3op2l0313f9247b4ed9330b055cjxa"#THE SECRET KEY
 
 #Establish Connection
 try:
     # defining the UPI to establis a connection:     
-    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
+    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
+    app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
 except:
@@ -295,7 +295,7 @@ def stockup():
         quantity=request.form["quantity"]
         bp= request.form["bp"]         
         created_at="NOW()"
-        if product_name == "" or quantity == "" or bp == "":
+        if product_name != "" or quantity != "" or bp != "":
             prodct=Stock.query.filter_by(product_name=product_name).first()
             if prodct:
                 flash("You can't add an existing product","danger")
@@ -308,7 +308,7 @@ def stockup():
                 return redirect(url_for('stock'))
         else:
             flash('Required conditions not met!', 'danger') 
-            return render_template("viccistock.html")
+            return redirect(url_for('stock'))
        
 @app.route('/avail', methods=["POST"])
 def avail():
@@ -349,7 +349,7 @@ def sales():
 @app.route('/sale/<string:id>')
 def sale(id):
     # cur.execute("SELECT pr.name,sum((pr.sp-pr.bp)* sl.quantity) as ttlprofit,sum(sl.quantity)as totalprofit FROM public.sales as sl join product as pr on pr.id=sl.product_id where pr.id=%s group by pr.name ",[id])    
-    sales=db.session.query(Product.name,db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).all()    
+    sales=db.session.query(Product.name,db.func.sum((Product.sp-Product.bp)*Sales.quantity).label("Profit"),db.func.sum(Sales.quantity).label("Quantity")).join(Sales,Product.id==Sales.product_id).group_by(Product.name).filter(Product.id==id).all()    
     return render_template("viccistocksales.html",sale=sales)
     
 @app.route('/payroll', methods=["GET","POST"] )
@@ -505,7 +505,7 @@ def user():
 
 @app.route("/users",methods=["GET","POST"])  
 @login_required 
-def users():
+def users():    
     users=Users.query.order_by(Users.designation).filter(Users.designation !="Admin").all()
     print(users)    
     return render_template("users.html",users=users)
@@ -617,38 +617,41 @@ def view():
         desg=request.form["desg"]
         code=request.form["passw"]
         uid=request.form["id"]
-        # name=request.form["uname"]
-        # dcnv=check_password_hash(Users.upasscode, code)
-        data=Users.query.filter(Users.designation =="Admin").first()
-        user=Users.query.filter_by(id=uid).one()
-        # if data:
-        if check_password_hash(data.upasscode, code):
-            if desg=="Manager":
-                flash(f" Welcome {data.uname}","success")
-                login_user(user,remember=True)
-                return redirect(url_for("manager"))
-            elif desg=="User":
-                flash(f" Welcome {data.uname}","success")
-                login_user(user,remember=True)
-                return redirect(url_for("user"))
-        else:
-            flash(" Wrong password!","danger")
-            return redirect(url_for("users"))
+        usr=request.form["usr"]
+        data=Users.query.filter_by(uname=usr).one()
+        if data.designation == "Admin" :
+            user=Users.query.filter_by(id=uid).one()
+            if check_password_hash(data.upasscode, code):
+                if desg=="Manager":
+                    flash(f" Welcome {data.uname}","success")
+                    login_user(user,remember=True)
+                    return redirect(url_for("manager"))
+                elif desg=="User":
+                    flash(f" Welcome {data.uname}","success")
+                    login_user(user,remember=True)
+                    return redirect(url_for("user"))
+            else:
+                flash(" Wrong password!","danger")
+                return redirect(url_for("users"))
 
 @app.route("/delete",methods=["POST"])
 def delete():
     if request.method=="POST":
         id=request.form["id"]
         code=request.form["passw"]
-        data=Users.query.filter_by(designation="Admin").first()
-        print("data",data.upasscode)
-        if check_password_hash(data.upasscode, code):
-            Users.query.filter_by(id=id).delete()
-            db.session.commit()
-            flash("User deleted","info")
-            return redirect(url_for("users"))
+        usr=request.form["usr"]
+        data=Users.query.filter_by(uname=usr).one()
+        if data.designation == "Admin" :
+            if check_password_hash(data.upasscode, code):
+                Users.query.filter_by(id=id).delete()
+                db.session.commit()
+                flash("User deleted","info")
+                return redirect(url_for("users"))
+            else:
+                flash("Wrong password!","danger")
+                return redirect(url_for("users"))
         else:
-            flash("Wrong password!","danger")
+            flash("You can't complete this action","danger")
             return redirect(url_for("users"))
 
 @app.route("/delete1",methods=["POST"])
@@ -656,22 +659,40 @@ def delete1():
     if request.method=="POST":
         id=request.form["id"]
         code=request.form["passw"]
-        # name=request.form["uname"]
-        data=Users.query.filter_by(designation="Admin").first()
-        print("data",data.upasscode)
-        user=Newsletter.query.filter_by(id=id)
-        if user :
+        usr=request.form["usr"]
+        data=Users.query.filter_by(uname=usr).one()
+        if data.designation == "Admin" :
             if check_password_hash(data.upasscode, code):
                 Newsletter.query.filter_by(id=id).delete()
                 db.session.commit()
-                flash("Candidate deleted","info")
+                flash("Candidate dropped!","info")
                 return redirect(url_for("adduser"))
             else:
                 flash("Wrong password!","danger")
                 return redirect(url_for("adduser"))
         else:
-            flash("No such User","danger")
-            return redirect(request.url)
+            flash("You can't complete this action","danger")
+            return redirect(url_for("adduser"))
+
+@app.route("/deletepr",methods=["POST"])
+def deletepr():
+    if request.method=="POST":
+        id=request.form["id"]
+        code=request.form["passw"]
+        usr=request.form["usr"]
+        data=Users.query.filter_by(uname=usr).first()        
+        if data.designation == "Admin":
+            if check_password_hash(data.upasscode, code):
+                Stock.query.filter_by(id=id).delete()
+                db.session.commit()
+                flash(f"Product deleted","info")
+                return redirect(url_for("stock"))
+            else:
+                flash("Wrong password!","danger")
+                return redirect(url_for("stock"))
+        else:
+            flash("You can't complete this action","danger")
+            return redirect(url_for("stock"))
 
 @app.route("/confirm", methods=["POST"])
 def confirm():

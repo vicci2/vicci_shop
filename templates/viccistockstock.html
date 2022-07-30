@@ -152,6 +152,7 @@
             <th scope="col">DATE ADDED</th>
             <th scope="col">AVAIL</th>
             <th scope="col">RESTOCK</th>
+            <th scope="col">DELETE</th>
           </tr>
         </thead>
         <tbody>
@@ -248,6 +249,41 @@
                     </div>
                   </div>
               </div>                                                        
+            </td>
+            <td>
+              <a  style="color: darkcyan;" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#deleteModal{{i.id}}"><img src="/static/delete.png" alt="" srcset=""></a>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div class="modal-dialog">
+                   <div class="modal-content" style="background: rgb(54, 54, 53);">
+                     <div class="modal-header">
+                       <h5 class="modal-title" id="exampleModalLabel">Delete Item</h5>
+                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+                     <form action="deletepr" method="POST">
+                       <div class="mb-3">
+                         <input type="hidden" name="id"  value="{{i.id}}" class="form-control" id="Item">
+                       </div>
+                       <div class="mb-3">
+                         <input type="text" name="product_name" disabled value="{{i.product_name}}" class="form-control" id="Item">
+                       </div>
+                       <div class="mb-3">
+                         <input type="hidden" name="usr"   value="{{current_user.uname}}" class="form-control" id="Item">
+                       </div>
+                       <div class="mb-3">
+                         <label for="Item" class="form-label"><strong>Password</strong></label>
+                         <input type="password" name="passw"  class="form-control" id="Item">
+                       </div>
+                     <div class="modal-footer">
+                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       <button type="submit" class="btn btn-dark">Delete</button>
+                     </div>
+                     </form>
+                     </div>
+                   </div>
+                 </div>
+               </div>
             </td>
           </tr> 
             {% endfor %}       
