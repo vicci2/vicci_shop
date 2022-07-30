@@ -18,8 +18,8 @@ app.secret_key="v89dp2umig063701bcfb67kcjn dpco3km2l3op2l0313f9247b4ed9330b055cj
 #Establish Connection
 try:
     # defining the UPI to establis a connection:     
-    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
+    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
+    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://rschqcsgcjxcuk:89063701bcfb6750313f9247b4ed9330b055aa4114d975baa82b474c65b9b57c@ec2-99-81-137-11.eu-west-1.compute.amazonaws.com:5432/dedp2umiglp1rr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
 except:
@@ -192,7 +192,6 @@ def editor():
     if request.method == "POST":
         id=request.form["id"] 
         sp=int(request.form["sp"])               
-#   query='UPDATE public.products SET name=%s, bp=%s, sp=%s, serial_no=%s WHERE id=%s;'
         data=Product.query.filter_by(id=id).one()
         data.sp=sp
         db.session.merge(data)
