@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 # SQL Achemy
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import  func, extract, DateTime 
+from sqlalchemy import func, extract, DateTime 
 # flask login
 from flask_login import UserMixin,login_user,logout_user,login_required,current_user,LoginManager
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -18,8 +18,8 @@ app.secret_key="v89dp2umig063701bcfb67kcjn dpco3km2l3op2l0313f9247b4ed9330b055cj
 #Establish Connection
 try:
     # defining the UPI to establis a connection:     
-    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    app.config['SQLALCHEMY_DATABASE_URI']='postgresql://vftfkocldyomjo:316f8a888612770e6d326e2cf3912139416bccf8f61031e35e4e36e83b9dc53cec2-54-75-26-218.eu-west-1.compute.amazonaws.com:5432/df478ras228hl0'
+    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
+    # app.config['SQLALCHEMY_DATABASE_URI']='postgresql://vftfkocldyomjo:316f8a888612770e6d326e2cf3912139416bccf8f61031e35e4e36e83b9dc53cec2-54-75-26-218.eu-west-1.compute.amazonaws.com:5432/df478ras228hl0'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
 except:
@@ -89,6 +89,13 @@ class Users(db.Model,UserMixin):
     whatsapp=db.Column(db.String(80) ,nullable=True)
     tgram=db.Column(db.String(80) ,nullable=True,unique=True)
     igram=db.Column(db.String(80) ,nullable=True,unique=True)
+    notes=db.relationship('Note',backref=db.backref('users',lazy=True))
+
+class Note(db.Model):
+    id=db.Column(db.Integer, primary_key=True, nullable=False)
+    data= db.Column(db.String(100000))
+    date= db.Column(db.DateTime(timezone=False),default=func.now())
+    userid=db.Column(db.Integer, db.ForeignKey('users.id'))
 
 #Using LoginManager
 login_manager = LoginManager()
@@ -441,6 +448,8 @@ def manager():
 @app.route("/admin",methods=["GET","POST"])  
 @login_required 
 def admin():  
+    # users=Newsletter.query.filter(Newsletter.status == "In progress").all()   
+    # new=db.session.query(db.func.sum(Newsletter.status == "In progress")).all()
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
@@ -508,6 +517,22 @@ def users():
     users=Users.query.order_by(Users.designation).filter(Users.designation !="Admin").all()
     print(users)    
     return render_template("users.html",users=users)
+
+@app.route('/notes',methods=["GET","POST"])
+@login_required
+def notes():
+    if request.method=='POST':
+        note=request.form["note"]
+        if len(note) < 1:
+            flash('Note too short!','danger')
+            return redirect(request.url)
+        else:
+            newNote=Note(data=note, userid=current_user.id)
+            db.session.add(newNote)
+            db.session.commit()
+            flash("New note successfully added","info")
+            return redirect(request.url)
+    return render_template("notes.html",user=current_user)
 
 @app.route("/purchase",methods=["GET","POST"])   
 def purchase():
@@ -693,6 +718,15 @@ def deletepr():
             flash("You can't complete this action","danger")
             return redirect(url_for("stock"))
 
+@app.route("/deleteNote", methods=["POST"])
+def deleteNote():
+    if request.method=='POST':
+        note=request.form["note"]        
+        Note.query.filter_by(id=note).delete()
+        db.session.commit()
+        flash("Note deleted","info")
+        return redirect(url_for("notes"))
+    
 @app.route("/confirm", methods=["POST"])
 def confirm():
     if request.method=="POST":

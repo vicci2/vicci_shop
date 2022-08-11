@@ -1,0 +1,163 @@
+{% extends "manager.html" %}
+{% block navtitle %}
+<h2>NOTES</h2><!-- <box-icon name="user" color="red" border="circle" size="md"></box-icon>        -->
+    <div class="col-sm-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert alert-{{category}}  align-items-center alert-dismissible fade show" role="alert">
+            <span>{{message}}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+              <!-- <span aria-hidden="true">&times;</span> -->
+            </button>
+          </div>           
+          {% endfor%}
+        {% endif %}
+      {% endwith %}
+    </div>
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
+    <div class="top">     
+    {% if current_user.is_authenticated and current_user.designation=="Admin" %}
+      <!-- <a href="#footer">Note UP</a> -->
+      <a href="admin">Home</a>      
+    {% elif current_user.is_authenticated and current_user.designation=="Manager" %}
+      <a href="manager">Home</a>
+    {% else %}
+      <a href="user">Home</a>
+    {% endif%}
+    </div>
+    <!-- </div> -->
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+<style>
+  a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
+  a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
+  @media only screen and (max-width: 1000px) {
+    .notes .note-header{    
+    transform: translateY(80%);
+    width: 100%;}   
+    .note{     
+    margin-top: 15%;}
+  }
+  @media only screen and (max-width: 991px) {
+   .cont{margin-top: 3rem;} 
+   .note{     
+    margin-top: 25%;
+    }  
+  }
+  @media only screen and (max-width: 846px) {
+    .notes .note-header{
+    width: 90%;}
+    }
+    .note{     
+    margin-top: 40%;
+    }
+  @media only screen and (max-width: 767px) {
+   .cont{margin-top: 3rem;}
+   h1{display: none;}
+   ul{margin-top: 5%;}
+  }
+  @media only screen and (max-width: 499px) {
+   .cont{margin-top: 15%;}
+   h1{display: initial;}
+  }
+  @media only screen and (max-width: 398px) {
+   .cont{margin-top: 30%;}
+   h1{display: initial;}
+  }
+  @media only screen and (max-width: 331px) {
+   .cont{margin-top: 40%;}
+   h1{display: initial;}
+  }
+  @media only screen and (max-width: 257px) {
+   .cont{margin-top: 50%;}
+   h1{display: initial;}
+  }
+  .footer{
+    padding-top: 1%;
+    padding-right: 4%;
+    padding-left: 4%;
+  }
+  .cont{
+    display: flex;flex-wrap: wrap;flex-direction: column;
+  }
+  .notes, .footer{
+    display: block;
+  }
+  .note{     
+    margin-bottom: 34%;
+    margin-top: 10%;
+  }
+  .notes .note-header{     
+    position: fixed;
+    transform: translateY(80%);
+    width: 83%;
+  }
+  .note .btn{
+    float: right;
+  }
+</style>
+<div class="cont ">
+<div class="notes">
+  <div class="note-header bg-light sticky-top">
+    <h1 align="center">{{user.uname}}'s Notes</h1>                    
+      <nav class="navbar navbar-light" style="background: transparent;">
+        <div class="container-fluid">
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="09 Aug 2022" aria-label="Search">
+            <button class="btn btn-outline-dark" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+  </div>
+  <div class="note">
+    <ul class="list-group list-group-flush" id="notes">
+      {% for note in user.notes %}
+       <li class="list-group-item">
+      <!-- <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> -->
+              <h6 class="list-group-item-heading" id="date"><ins>{{note.date | clean_date}}</ins></h6>
+            <!-- </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body"> -->
+              {{note.data}}
+            <!-- </div>
+          </div>
+        </div> -->
+          <form action="deleteNote" method="POST">
+            <input type="hidden" name="note" value="{{note.id}}">
+            <button type="submit" class="btn  btn-danger" >
+              Delete
+            </button>
+          </form>                   
+      </li>
+      {% endfor%}
+    </ul>
+  </div> 
+</div>
+<div class="footer fixed-bottom bg-light" >  
+  <form action="notes" method="post">
+    <textarea name="note" id="note" placeholder="New Note" class="form-control"></textarea>
+    <br /> 
+    <div align="center">
+      <button type="submit" class="btn mb-1 btn-dark">
+        Add Note
+      </button>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

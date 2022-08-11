@@ -2,7 +2,6 @@
 {% block title %}Stock Up Vicci{% endblock %}
 
 {% block navtitle %}
-
 <style>
   form{
     display: flex;flex-wrap: wrap;flex-direction: column;
@@ -16,6 +15,7 @@
     justify-content: center; align-items: center;
   }
 </style>
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <h2>Add user</h2> 
 <div class="col-sm-4">
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -34,7 +34,11 @@
 <div class="top">
   <a href="admin">Home</a>
 </div>
-
+{% else%}
+<div class="top">
+  <a href="home">Home</a>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block sidebar %}                                                      

@@ -31,12 +31,14 @@
     {% endif %}
   {% endwith %}
 </div>       
-<div class="top">
+<div class="top">  
+  <a href="notes">Notes</a>
   <a href="logout">Log-Out</a>
 </div>
-{% else%}
-<div class="top">
-  <a href="home">Home</a>
+{% elif current_user.is_authenticated and current_user.designation=="Manager" %}
+  <a href="manager">Home</a>
+{% else %}
+  <a href="user">Home</a>
 </div>
 {% endif %}
 {% endblock %}
@@ -141,16 +143,25 @@
   footer{
     display: flex;flex-wrap: wrap;flex-direction: row;
     justify-content: space-evenly;
-    margin-top:2rem;
-    padding: .8rem 1rem;
   }
 </style>
 <div class="col col-lg-11 col-md-12 col-sm12" style="margin-top: 14%;">        
   <div class="row text-warning">
-    <div class="row text-warning"> 
-      
-      <h1 align="center">{{admin.uname}}'s Profile</h1>
-      
+    <!-- <div class="toast-container">
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <img src="..." class="rounded me-2" alt="...">
+          <strong class="me-auto">Bootstrap</strong>
+          <small class="text-muted">just now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          See? Just like this.
+        </div>
+      </div>
+    </div> -->
+    <div class="row text-warning">       
+      <h1 align="center">{{admin.uname}}'s Profile</h1>      
     </div>
       <div class="cont">
         <div class="pic">
@@ -252,7 +263,7 @@
 
 {% block footer %}
 {% if current_user.is_authenticated and current_user.designation=="Admin" %}
-<footer class="bottom bg-dark text-danger ">
+<footer class="botom fixed-bottom bg-dark text-danger ">
   <div class="contact">
     hotlines
     <ul>      

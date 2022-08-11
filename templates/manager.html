@@ -20,9 +20,11 @@
   <title>{% block title %}Stock Up Vicci{% endblock %}</title>
 </head>
 <body>
+  <div class="nav bg-dark">  
   <nav>
-    {%  block navtitle %}
-    <h2>MANAGER</h2><!-- <box-icon name="user" color="red" border="circle" size="md"></box-icon>        -->
+  {%  block navtitle %} 
+  {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}   
+    <h2>MANAGER</h2><!-- <box-icon name="user" color="red" border="circle" size="md"></box-icon>        -->       
     <div class="col-sm-4">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -37,11 +39,25 @@
         {% endif %}
       {% endwith %}
     </div>
+    <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>  -->
+    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
     <div class="top">
+      {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}        
+      <a href="notes">Notes</a>
       <a href="logout">Log-Out</a>
+      {% else%}
+      <a href="user">Home</a>
+      {% endif %}
     </div>
-    {% endblock %}
+    <!-- </div> -->
+  {% else %}
+    <a href="user">Home</a>
+  {% endif %}
+  {% endblock %}
   </nav>
+  </div>
   <div class="container">
     <div class="row" >
       <div class="col col-lg-2 col-md-12 col-sm-12 " id="left">
@@ -95,7 +111,8 @@
         {% endif %}
         {% endblock %}      
       </div>      
-        {% block content %}
+    {% block content %}
+    {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}        
         <style>
           a{text-decoration: none; font-family:  sans-serif;font-weight: bolder; color: rgb(172, 8, 8);}
           a:hover{background-color:rgb(80, 79, 75); border-radius: 5px; color: rgb(172, 8, 8);}
@@ -137,7 +154,6 @@
             display: flex;flex-wrap: wrap;flex-direction: row;
             justify-content: space-evenly;
             margin-top:2rem;
-            padding: .8rem 1rem;
           }
           ul{
             list-style-type: none;
@@ -214,13 +230,17 @@
             </tr>
           </tbody>
         </table> -->
-      </div>
-    </div>
-    {% endblock %}
-    </div> 
-    </div>
+{% else%}
+<div class="top">
+  <p><h2>You can't access this page!</h2></p>
+</div>
+{% endif %}
+{% endblock %}
+</div> 
+</div>
     {% block footer%}
-    <footer class="bottom bg-dark text-danger ">
+    {% if current_user.is_authenticated and current_user.designation=="Admin" or current_user.designation=="Manager" %}        
+    <footer class="botom fixed-bottom bg-dark text-danger ">
       <div class="contact">
         hotlines
         <ul>         
@@ -241,6 +261,7 @@
         
       </div>
     </footer>
+    {% endif %}
     {% endblock %}
     <!-- Optional JavaScript; choose one of the two! -->
 
