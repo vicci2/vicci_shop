@@ -34,10 +34,14 @@
 <div class="top">
   <a href="admin">Home</a>
 </div>
-{% else%}
-<div class="top">
-  <a href="home">Home</a>
-</div>
+{% elif current_user.is_authenticated and current_user.designation=="Manager" %}
+<!-- <div class="top"> -->
+  <a href="manager">Home</a>
+<!-- </div> -->
+{% else %}
+<!-- <div class="top"> -->
+  <a href="user">Home</a>
+<!-- </div> -->
 {% endif %}
 {% endblock %}
 
@@ -45,7 +49,7 @@
 {% endblock %}
 
 {% block content %}
-
+{% if current_user.is_authenticated and current_user.designation=="Admin" %}
 <style>
     input{border: none;
       text-align: center;
@@ -86,7 +90,7 @@
       display: flex;flex-wrap: wrap;flex-direction: column;
       justify-content: center; align-items: center;
     }
-  </style>
+</style>
   <div class="col col-lg-12 col-md-12 col-sm12" style="margin-top: 14%;">        
     <div class="row text-warning">        
       <table>
@@ -202,8 +206,13 @@
        </table>
     </div>
   </div>
-  </div>
-  </div>
+{% else %}
+<div class="top">
+  <p><h2>You can't access this page!</h2></p>
+</div>
+{% endif %}
+</div>
+</div>
 
 {% endblock %}
 {% block footer%}
