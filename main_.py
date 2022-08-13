@@ -454,7 +454,7 @@ def admin():
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
-@login_required 
+# @login_required 
 def adduser():
     if request.method=="POST":
         uid=request.form["id"]
