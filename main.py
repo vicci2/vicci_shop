@@ -19,7 +19,7 @@ app.secret_key="v89dp2umig063701bcfb67kcjn dpco3km2l3op2l0313f9247b4ed9330b055cj
 try:
     # defining the UPI to establis a connection:     
     # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://wgosvuafjppyyg:dcd58df0bd74d7c67a600f438a29c4f54a041d90694dc3e44d53bfa0f0fa2816@ec2-54-77-40-202.eu-west-1.compute.amazonaws.com:5432/d90lel8e1t0mha"
+    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://xbpnuwrxgttzes:e1a4bd8a402541707b568a43b15a355442679cd73fd4276874543362a9b1966b@ec2-52-31-70-136.eu-west-1.compute.amazonaws.com:5432/d46t7u38d1lqqm"
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
