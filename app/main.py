@@ -13,13 +13,14 @@ from email.policy import default
 # import psycopg2
 # passing the app to flask:
 app =Flask(__name__)
-app.secret_key="v89dp2umig063701bcfb67kcjn dpco3km2l3op2l0313f9247b4ed9330b055cjxa"#THE SECRET KEY
+app.secret_key="v89dp2u-mig063701bcfb67kcjn-dpco3km2l3o-p2l0313f92-47b4ed9330b055cjxa"#THE SECRET KEY
 
 #Establish Connection
 try:
     # defining the UPI to establis a connection:     
-    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
-    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://xbpnuwrxgttzes:e1a4bd8a402541707b568a43b15a355442679cd73fd4276874543362a9b1966b@ec2-52-31-70-136.eu-west-1.compute.amazonaws.com:5432/d46t7u38d1lqqm"
+    app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://postgres:vicciSQL@localhost:5432/alchemy"
+    "Heroku db UI:" 
+    # app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://xbpnuwrxgttzes:e1a4bd8a402541707b568a43b15a355442679cd73fd4276874543362a9b1966b@ec2-52-31-70-136.eu-west-1.compute.amazonaws.com:5432/d46t7u38d1lqqm"
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     print ("Successfullly connected to the  Vicci database")
@@ -29,7 +30,6 @@ except:
 # db(app) we use this to give the app a database:
 
 db = SQLAlchemy(app)
-
 # Creating required tables
 class Suppliers(db.Model):
     __tablename__='suppliers'
@@ -56,7 +56,7 @@ class Product(db.Model):
     bp = db.Column(db.Numeric(15), unique=False)
     sp = db.Column(db.Numeric(15), unique=False)
     quantity = db.Column(db.Numeric(15),nullable=False )
-    serial_no = db.Column(db.Integer, unique=True)
+    serial_no = db.Column(db.String, unique=True)
     product=db.relationship('Sales',backref=db.backref('product',lazy=True))
 
 class Sales(db.Model):
@@ -454,7 +454,7 @@ def admin():
     return render_template("admin.html",admin=current_user)
 
 @app.route("/adduser",methods=["GET","POST"])  
-# @login_required 
+@login_required 
 def adduser():
     if request.method=="POST":
         uid=request.form["id"]
@@ -582,6 +582,8 @@ def signup():
         email=request.form["email"]
         tel=request.form["tel"]
         user=Newsletter.query.filter_by(email=email).first()
+        new=Users.query.all()
+        print("Number of Users: ",new)
         if user :
             flash(f" Sorry {fname} you cant apply twice","warning")
             return redirect(request.url)
@@ -591,11 +593,19 @@ def signup():
         else:
             if len(lname)>2 and len(lname)>2 and lname!="" and fname!="":
                 if len(tel)==10 or len(tel)==12 or len(tel)==13 and tel!="":
-                    data=Newsletter(fname=fname, lname=lname,status=status,email=email,tel=tel)
-                    db.session.add(data)
-                    db.session.commit()
-                    flash("You will get the login details after evaluation","info")
-                    return redirect(url_for("ims"))
+                    if len(new) == 0:
+                        upasscode="12345678"
+                        row=Users(fname=fname,lname=lname,email=email,upasscode=generate_password_hash( upasscode,method='sha256'),tel=tel,designation="Admin",e_id=1,uname="Admin1",igram=fname+".igram.com",tgram=fname+".tgram.com")    
+                        db.session.add(row)
+                        db.session.commit()
+                        flash(f"Dear {lname} check your email inbox for login cridentials.","success")
+                        return redirect(url_for("ims"))
+                    else:
+                        data=Newsletter(fname=fname, lname=lname,status=status,email=email,tel=tel)
+                        db.session.add(data)
+                        db.session.commit()
+                        flash("You will get the login details after evaluation","info")
+                        return redirect(url_for("ims"))                        
                 else:
                     flash("Invalid entery. Check Your Phone number","warning")
                     return redirect(request.url)
